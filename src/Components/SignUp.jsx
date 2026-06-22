@@ -1,6 +1,6 @@
 import { Link } from "react-router";
 import { auth } from "../Firebase/Firebase.config";
-import { createUserWithEmailAndPassword, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
+import { createUserWithEmailAndPassword, GoogleAuthProvider, sendEmailVerification, signInWithPopup, updateProfile } from "firebase/auth";
 import { toast } from "react-toastify";
 import { useState } from "react";
 import { FaEye } from "react-icons/fa";
@@ -17,11 +17,11 @@ const Signup = () => {
     const handleSignUp = (e) => {
         e.preventDefault()
         // console.log("Hello");
-        const name = e.target.name?.value;
+        const displayName = e.target.name?.value;
         const email = e.target.email?.value;
-        // const photo = e.target.photo?.value;
+        const photoURL = e.target.photo?.value;
         const password = e.target.password?.value
-        console.log(name, email, password)
+        // console.log(name, email, password)
 
 
         if (password.length < 6) {
@@ -37,8 +37,23 @@ const Signup = () => {
 
         createUserWithEmailAndPassword(auth, email, password)
             .then(res => {
-                console.log(res)
-                toast.success("signup Successful")
+                updateProfile(res.user, { displayName, photoURL })
+                    .then(()=> {
+                        // console.log(res)
+                        sendEmailVerification(res.user)
+                            .then(res => {
+                                console.log(res)
+                                toast.success("signup Successful check your mail")
+                            })
+                            .catch(e => {
+                                toast.error(e.message)
+                            })
+                    })
+                    .catch(e => {
+                        toast.error(e.message)
+                    })
+                // console.log(res)
+                // toast.success("signup Successful")
             })
             .catch((e) => {
                 console.log(e.code)
@@ -52,6 +67,13 @@ const Signup = () => {
 
         signInWithPopup(auth, provider)
             .then(res => {
+                sendEmailVerification(res.user)
+                    .then(res => {
+                        console.log(res)
+                    })
+                    .catch(e => {
+                        toast.error(e.message)
+                    })
                 console.log(res)
                 toast.success("user successfully Login")
             })

@@ -1,19 +1,19 @@
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { FaEye } from "react-icons/fa";
 import { IoEye } from "react-icons/io5";
 import { Link } from "react-router";
 import { auth } from "../Firebase/Firebase.config";
-import { GoogleAuthProvider, signInWithEmailAndPassword, signInWithPopup } from "firebase/auth";
+import { GoogleAuthProvider, signInWithEmailAndPassword, signInWithPopup, sendPasswordResetEmail } from "firebase/auth";
 import { toast } from "react-toastify";
 
 
 const Signin = () => {
-
+  const [user, setUser] = useState(null)
   const [show, setShow] = useState(false)
 
   const provider = new GoogleAuthProvider();
-
+  const emailRef = useRef(null)
   const handleSignin = (e) => {
     e.preventDefault()
     const email = e.target.email.value;
@@ -21,6 +21,27 @@ const Signin = () => {
     // console.log(email, password)
 
     signInWithEmailAndPassword(auth, email, password)
+      .then(res => {
+        if (!res.emailVerified) {
+          toast.error("Your email is not verified")
+          return;
+        }
+        setUser(res.user)
+        console.log(res)
+        toast.success("user successfully Login")
+      })
+      .catch(e => {
+        console.log(e)
+        toast.error(e.message)
+      })
+  }
+
+  console.log(user)
+
+
+  const handleGoogleSignin = () => {
+
+    signInWithPopup(auth, provider)
       .then(res => {
         console.log(res)
         toast.success("user successfully Login")
@@ -30,14 +51,14 @@ const Signin = () => {
       })
   }
 
-  const handleGoogleSignin = () => {
 
-    signInWithPopup(auth, provider)
-      .then(res => {
-      console.log(res)
-      toast.success("user successfully Login")
-    })
-      .catch(e => {
+  const handleResetPass = () => {
+    const email = emailRef.current.value
+    sendPasswordResetEmail(auth, email)
+      .then(() => {
+        toast.success("check your email to reset password")
+      })
+      .error(e => {
         toast.error(e.message)
       })
   }
@@ -76,6 +97,7 @@ const Signin = () => {
               <input
                 type="email"
                 name="email"
+                ref={emailRef}
                 placeholder="example@email.com"
                 className="input input-bordered w-full bg-white/20 text-white placeholder-white/60 focus:outline-none focus:ring-2 focus:ring-blue-400"
               />
@@ -89,7 +111,7 @@ const Signin = () => {
                 className="input input-bordered w-full bg-white/20 text-white placeholder-white/60 focus:outline-none focus:ring-2 focus:ring-blue-400"
               />
               <span className="absolute right-[8px] top-[36px] cursor-pointer z-50">
-                <span onClick={() => setShow(!show)}>{
+                <span onClick={() => setShow(!show)}> {
                   show ? <FaEye></FaEye> : <IoEye></IoEye>}</span>
               </span>
             </div>
@@ -97,6 +119,7 @@ const Signin = () => {
             <button
               className="hover:underline cursor-pointer"
               type="button"
+              onClick={handleResetPass}
             >
               Forget password?
             </button>
