@@ -22,7 +22,7 @@ const Signin = () => {
 
     signInWithEmailAndPassword(auth, email, password)
       .then(res => {
-        if (!res.emailVerified) {
+        if (!res.user.emailVerified) {
           toast.error("Your email is not verified")
           return;
         }
@@ -36,7 +36,7 @@ const Signin = () => {
       })
   }
 
-  console.log(user)
+  // console.log(user)
 
 
   const handleGoogleSignin = () => {
@@ -58,7 +58,7 @@ const Signin = () => {
       .then(() => {
         toast.success("check your email to reset password")
       })
-      .error(e => {
+      .catch(e => {
         toast.error(e.message)
       })
   }
@@ -106,6 +106,7 @@ const Signin = () => {
             <div className="relative">
               <label className="block text-sm mb-1">Password</label>
               <input
+                type={show ? "text" : "password"}
                 name="password"
                 placeholder="••••••••"
                 className="input input-bordered w-full bg-white/20 text-white placeholder-white/60 focus:outline-none focus:ring-2 focus:ring-blue-400"
