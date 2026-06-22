@@ -1,0 +1,46 @@
+
+// Import Swiper React components
+import { Swiper, SwiperSlide } from 'swiper/react';
+
+// Import Swiper styles
+import 'swiper/css';
+import 'swiper/css/effect-fade';
+import 'swiper/css/navigation';
+import 'swiper/css/pagination';
+
+// import './styles.css';
+
+// import required modules
+import { EffectFade, Navigation, Pagination } from 'swiper/modules';
+
+const HeroSlider = () => {
+    return (
+        <div >
+            <Swiper
+                spaceBetween={30}
+                effect={'fade'}
+                navigation={true}
+                pagination={{
+                    clickable: true,
+                }}
+                modules={[EffectFade, Navigation, Pagination]}
+                className="mySwiper w-auto max-h-150"
+            >
+                <SwiperSlide>
+                    <img src="https://swiperjs.com/demos/images/abstract-1.jpg" />
+                </SwiperSlide>
+                <SwiperSlide>
+                    <img src="https://swiperjs.com/demos/images/abstract-2.jpg" />
+                </SwiperSlide>
+                <SwiperSlide>
+                    <img src="https://swiperjs.com/demos/images/abstract-3.jpg" />
+                </SwiperSlide>
+                <SwiperSlide>
+                    <img src="https://swiperjs.com/demos/images/abstract-4.jpg" />
+                </SwiperSlide>
+            </Swiper>
+        </div>
+    );
+};
+
+export default HeroSlider;
