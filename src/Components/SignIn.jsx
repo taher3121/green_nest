@@ -3,11 +3,44 @@ import { useState } from "react";
 import { FaEye } from "react-icons/fa";
 import { IoEye } from "react-icons/io5";
 import { Link } from "react-router";
+import { auth } from "../Firebase/Firebase.config";
+import { GoogleAuthProvider, signInWithEmailAndPassword, signInWithPopup } from "firebase/auth";
+import { toast } from "react-toastify";
 
 
 const Signin = () => {
 
   const [show, setShow] = useState(false)
+
+  const provider = new GoogleAuthProvider();
+
+  const handleSignin = (e) => {
+    e.preventDefault()
+    const email = e.target.email.value;
+    const password = e.target.password.value;
+    // console.log(email, password)
+
+    signInWithEmailAndPassword(auth, email, password)
+      .then(res => {
+        console.log(res)
+        toast.success("user successfully Login")
+      })
+      .catch(e => {
+        toast.error(e.message)
+      })
+  }
+
+  const handleGoogleSignin = () => {
+
+    signInWithPopup(auth, provider)
+      .then(res => {
+      console.log(res)
+      toast.success("user successfully Login")
+    })
+      .catch(e => {
+        toast.error(e.message)
+      })
+  }
 
 
   return (
@@ -33,7 +66,7 @@ const Signin = () => {
 
         {/* Login card */}
         <div className="w-full max-w-md backdrop-blur-lg bg-white/10 border border-white/20 shadow-2xl rounded-2xl p-8">
-          <form className="space-y-5">
+          <form onSubmit={handleSignin} className="space-y-5">
             <h2 className="text-2xl font-semibold mb-2 text-center text-white">
               Sign In
             </h2>
@@ -81,6 +114,7 @@ const Signin = () => {
 
             {/* Google Signin */}
             <button
+              onClick={handleGoogleSignin}
               type="button"
               className="flex items-center justify-center gap-3 bg-white text-gray-800 px-5 py-2 rounded-lg w-full font-semibold hover:bg-gray-100 transition-colors cursor-pointer"
             >

@@ -1,6 +1,6 @@
 import { Link } from "react-router";
 import { auth } from "../Firebase/Firebase.config";
-import { createUserWithEmailAndPassword } from "firebase/auth";
+import { createUserWithEmailAndPassword, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 import { toast } from "react-toastify";
 import { useState } from "react";
 import { FaEye } from "react-icons/fa";
@@ -9,16 +9,17 @@ import { IoEye } from "react-icons/io5";
 
 
 
+
 const Signup = () => {
 
-    const [show,setShow] = useState(false)
-
+    const [show, setShow] = useState(false)
+    const provider = new GoogleAuthProvider();
     const handleSignUp = (e) => {
         e.preventDefault()
         // console.log("Hello");
         const name = e.target.name?.value;
         const email = e.target.email?.value;
-        const photo = e.target.photo?.value;
+        // const photo = e.target.photo?.value;
         const password = e.target.password?.value
         console.log(name, email, password)
 
@@ -40,9 +41,25 @@ const Signup = () => {
                 toast.success("signup Successful")
             })
             .catch((e) => {
-                toast.error(e.message);
+                console.log(e.code)
+                if (e.code == 'auth/email-already-in-use') {
+                    toast.error('user already exist')
+                }
             })
     }
+
+    const handleGoogleSignin = () => {
+
+        signInWithPopup(auth, provider)
+            .then(res => {
+                console.log(res)
+                toast.success("user successfully Login")
+            })
+            .catch(e => {
+                toast.error(e.message)
+            })
+    }
+
 
     return (
         <div className="min-h-[96vh] flex items-center justify-center bg-gradient-to-br from-pink-300 via-50% to-yellow-400 relative overflow-hidden">
@@ -102,14 +119,14 @@ const Signup = () => {
                                 Password
                             </label>
                             <input
-                                type={show ? "text": "password"}
+                                type={show ? "text" : "password"}
                                 name="password"
                                 placeholder="••••••••"
                                 className="input input-bordered w-full bg-white/20 text-white placeholder-white/60 focus:outline-none focus:ring-2 focus:ring-black-400"
                             />
                             <span className="absolute right-[8px] top-[36px] cursor-pointer z-50">
-                                <span onClick={()=> setShow(!show) }>{
-                                 show? <FaEye></FaEye> : <IoEye></IoEye>   }</span>
+                                <span onClick={() => setShow(!show)}>{
+                                    show ? <FaEye></FaEye> : <IoEye></IoEye>}</span>
                             </span>
                         </div>
 
@@ -123,6 +140,7 @@ const Signup = () => {
                         </div>
 
                         <button
+                            onClick={handleGoogleSignin}
                             type="button"
                             className="flex items-center justify-center gap-3 bg-white text-gray-800 px-5 py-2 rounded-lg w-full font-semibold hover:bg-gray-100 transition-colors cursor-pointer"
                         >
