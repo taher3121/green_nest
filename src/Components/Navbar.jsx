@@ -1,5 +1,7 @@
 import { Link, NavLink } from 'react-router';
 import greenleaf from '../assets/istockphoto-1045368942-612x612.jpg'
+import { useContext } from 'react';
+import { AuthContext } from '../Context/AuthContext';
 
 const Navbar = () => {
     const links = <>
@@ -7,6 +9,9 @@ const Navbar = () => {
         <NavLink to='/plants' className='mr-3 text-xl'>Plants</NavLink>
         <NavLink to='/myProfile' className='mr-3 text-xl'>My Profile</NavLink>
     </>
+
+    const result = useContext(AuthContext);
+    console.log(result)
     return (
         <div>
             <div className="navbar bg-base-100 shadow-sm relative z-50">
