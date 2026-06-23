@@ -2,20 +2,22 @@
 import { useContext, useRef, useState } from "react";
 import { FaEye } from "react-icons/fa";
 import { IoEye } from "react-icons/io5";
-import { Link } from "react-router";
+import { Link, useLocation, useNavigate } from "react-router";
 import { toast } from "react-toastify";
 import { AuthContext } from "../Context/AuthContext";
 
 
 const Signin = () => {
-  
+
   const [show, setShow] = useState(false)
 
   const emailRef = useRef(null)
 
-  const { signInWithEmailAndPasswordfunc,signInWithPopupfunc,sendPasswordResetEmailfunc,setUser } = useContext(AuthContext)
+  const { signInWithEmailAndPasswordfunc, signInWithPopupfunc, sendPasswordResetEmailfunc, setUser } = useContext(AuthContext)
 
-
+  const location = useLocation();
+  const from = location.state || "/";
+  const navigate = useNavigate();
 
   const handleSignin = (e) => {
     e.preventDefault()
@@ -30,8 +32,9 @@ const Signin = () => {
           return;
         }
         setUser(res.user)
-        console.log(res)
+        // console.log(res)
         toast.success("user successfully Login")
+        navigate(from);
       })
       .catch(e => {
         console.log(e)
@@ -47,6 +50,8 @@ const Signin = () => {
     signInWithPopupfunc()
       .then(res => {
         console.log(res)
+        setUser(res.user);
+        navigate(from);
         toast.success("user successfully Login")
       })
       .catch(e => {

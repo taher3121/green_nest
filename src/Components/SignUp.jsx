@@ -1,5 +1,5 @@
-import { Link } from "react-router";
-import {  sendEmailVerification, updateProfile } from "firebase/auth";
+import { Link, useNavigate } from "react-router";
+import { sendEmailVerification, updateProfile } from "firebase/auth";
 import { toast } from "react-toastify";
 import { useContext, useState } from "react";
 import { FaEye } from "react-icons/fa";
@@ -13,12 +13,12 @@ import { AuthContext } from "../Context/AuthContext";
 const Signup = () => {
 
     const [show, setShow] = useState(false)
-    
-    
-    const {createUserWithEmailAndPasswordfunc,signInWithPopupfunc} = useContext(AuthContext)
-    
-    
-    
+
+
+    const { createUserWithEmailAndPasswordfunc, signInWithPopupfunc, signOutfunc, setUser } = useContext(AuthContext)
+
+    const  navigate = useNavigate()
+
     const handleSignUp = (e) => {
         e.preventDefault()
         // console.log("Hello");
@@ -43,12 +43,20 @@ const Signup = () => {
         createUserWithEmailAndPasswordfunc(email, password)
             .then(res => {
                 updateProfile(res.user, { displayName, photoURL })
-                    .then(()=> {
+                    .then(() => {
                         // console.log(res)
                         sendEmailVerification(res.user)
                             .then(res => {
                                 console.log(res)
-                                toast.success("signup Successful check your mail")
+                                signOutfunc()
+                                    .then(() => {
+                                        toast.success("signup Successful check your mail")
+                                        setUser(null);
+                                        navigate('/signin')
+                                    })
+                                    .catch((e) => {
+                                        toast.error(e.message)
+                                    })
                             })
                             .catch(e => {
                                 toast.error(e.message)

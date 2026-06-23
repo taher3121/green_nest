@@ -2,16 +2,32 @@ import { Link, NavLink } from 'react-router';
 import greenleaf from '../assets/istockphoto-1045368942-612x612.jpg'
 import { useContext } from 'react';
 import { AuthContext } from '../Context/AuthContext';
+import { toast } from 'react-toastify';
 
 const Navbar = () => {
+    const { user, signOutfunc, setUser } = useContext(AuthContext);
+    console.log(user)
+    
     const links = <>
         <NavLink to='/' className='mr-3 text-xl '>Home</NavLink>
         <NavLink to='/plants' className='mr-3 text-xl'>Plants</NavLink>
-        <NavLink to='/myProfile' className='mr-3 text-xl'>My Profile</NavLink>
+        {
+            user &&(<NavLink to='/myProfile' className='mr-3 text-xl'>My Profile</NavLink>)
+        }
     </>
 
-    const {user} = useContext(AuthContext);
-    console.log(user)
+
+    const handleSignOut = () => {
+        signOutfunc()
+            .then(() => {
+                toast.success("signout Successful");
+                setUser(null);
+            })
+            .catch((e) => {
+                toast.error(e.message)
+            })
+    }
+
     return (
         <div>
             <div className="navbar bg-base-100 shadow-sm relative z-50">
@@ -40,13 +56,44 @@ const Navbar = () => {
                         }
                     </ul>
                 </div>
+
+
+
                 <div className="navbar-end gap-2" >
-                    <button className='btn'>
-                        <Link to='/signin'>Sign In</Link>
-                    </button>
-                    <button className='btn'>
-                        <Link to='/Signup'>Sign Up</Link>
-                    </button>
+                    {
+                        user ? (
+                            <>
+                                <button className="btn" popoverTarget="popover-1" style={{ anchorName: "--anchor-1" }}>
+                                    <img
+                                        src={user?.photoURL || "https://via.placeholder.com/88"}
+                                        className="h-[40px] w-[40px] rounded-full mx-auto"
+                                        alt=""
+                                    />
+                                </button>
+
+                                <ul className="dropdown menu w-52 rounded-box bg-base-100 shadow-sm"
+                                    popover="auto" id="popover-1" style={{ positionAnchor: "--anchor-1" }}>
+                                    <li>
+                                        <h2 className="text-xl font-semibold">{user?.displayName}</h2>
+                                    </li>
+                                    <li>
+                                        <button className='btn' onClick={handleSignOut}>
+                                            Sign Out
+                                        </button>
+                                    </li>
+                                </ul>
+                            </>
+                        ) : (
+                            <>
+                                <button className='btn'>
+                                    <Link to='/signin'>Sign In</Link>
+                                </button>
+                                <button className='btn'>
+                                    <Link to='/Signup'>Sign Up</Link>
+                                </button>
+                            </>
+                        )
+                    }
                 </div>
             </div>
         </div>
