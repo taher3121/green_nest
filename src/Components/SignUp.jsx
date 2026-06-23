@@ -17,7 +17,7 @@ const Signup = () => {
 
     const { createUserWithEmailAndPasswordfunc, signInWithPopupfunc, signOutfunc, setUser } = useContext(AuthContext)
 
-    const  navigate = useNavigate()
+    const navigate = useNavigate()
 
     const handleSignUp = (e) => {
         e.preventDefault()
@@ -83,6 +83,15 @@ const Signup = () => {
                 sendEmailVerification(res.user)
                     .then(res => {
                         console.log(res)
+                        signOutfunc()
+                            .then(() => {
+                                toast.success("signup Successful check your mail")
+                                setUser(null);
+                                navigate('/signin')
+                            })
+                            .catch((e) => {
+                                toast.error(e.message)
+                            })
                     })
                     .catch(e => {
                         toast.error(e.message)

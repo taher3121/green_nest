@@ -13,11 +13,16 @@ const Signin = () => {
 
   const emailRef = useRef(null)
 
-  const { signInWithEmailAndPasswordfunc, signInWithPopupfunc, sendPasswordResetEmailfunc, setUser } = useContext(AuthContext)
+  const { signInWithEmailAndPasswordfunc, signInWithPopupfunc, sendPasswordResetEmailfunc, setUser,user } = useContext(AuthContext)
 
   const location = useLocation();
   const from = location.state || "/";
   const navigate = useNavigate();
+
+  if(user){
+    navigate('/')
+    return
+  }
 
   const handleSignin = (e) => {
     e.preventDefault()

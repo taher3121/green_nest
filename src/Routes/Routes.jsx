@@ -5,31 +5,44 @@ import Plants from "../Pages/Plants";
 import MyProfile from "../Pages/MyProfile";
 import Signup from "../Components/SignUp";
 import Signin from "../Components/SignIn";
+import PrivateRoute from "../PrivateRoute/PrivateRoute";
+import PlantsDetails from "../Components/PlantsDetails";
 
 export const router = createBrowserRouter([
     {
-        path:"/",
+        path: "/",
         Component: Root,
-        children:[
+        children: [
             {
-                index:true,
+                index: true,
                 Component: Home
             },
             {
-                path:'/plants',
+                path: '/plants',
                 Component: Plants
             },
             {
                 path: '/myProfile',
-                Component: MyProfile
+                element:(
+                    <PrivateRoute>
+                        <MyProfile></MyProfile>
+                    </PrivateRoute>)
             },
             {
-                path:'/Signup',
+                path: '/Signup',
                 Component: Signup
             },
             {
-                path:'/signin',
+                path: '/signin',
                 Component: Signin
+            },
+            {
+                path :'/plantDetails/:id',
+                element:(
+                    <PrivateRoute>
+                        <PlantsDetails></PlantsDetails>
+                    </PrivateRoute>
+                )
             }
         ]
     }
