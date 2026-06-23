@@ -10,8 +10,8 @@ const Navbar = () => {
         <NavLink to='/myProfile' className='mr-3 text-xl'>My Profile</NavLink>
     </>
 
-    const result = useContext(AuthContext);
-    console.log(result)
+    const {user} = useContext(AuthContext);
+    console.log(user)
     return (
         <div>
             <div className="navbar bg-base-100 shadow-sm relative z-50">

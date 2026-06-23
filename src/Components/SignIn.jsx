@@ -1,26 +1,29 @@
 
-import { useRef, useState } from "react";
+import { useContext, useRef, useState } from "react";
 import { FaEye } from "react-icons/fa";
 import { IoEye } from "react-icons/io5";
 import { Link } from "react-router";
-import { auth } from "../Firebase/Firebase.config";
-import { GoogleAuthProvider, signInWithEmailAndPassword, signInWithPopup, sendPasswordResetEmail } from "firebase/auth";
 import { toast } from "react-toastify";
+import { AuthContext } from "../Context/AuthContext";
 
 
 const Signin = () => {
-  const [user, setUser] = useState(null)
+  
   const [show, setShow] = useState(false)
 
-  const provider = new GoogleAuthProvider();
   const emailRef = useRef(null)
+
+  const { signInWithEmailAndPasswordfunc,signInWithPopupfunc,sendPasswordResetEmailfunc,setUser } = useContext(AuthContext)
+
+
+
   const handleSignin = (e) => {
     e.preventDefault()
     const email = e.target.email.value;
     const password = e.target.password.value;
     // console.log(email, password)
 
-    signInWithEmailAndPassword(auth, email, password)
+    signInWithEmailAndPasswordfunc(email, password)
       .then(res => {
         if (!res.user.emailVerified) {
           toast.error("Your email is not verified")
@@ -41,7 +44,7 @@ const Signin = () => {
 
   const handleGoogleSignin = () => {
 
-    signInWithPopup(auth, provider)
+    signInWithPopupfunc()
       .then(res => {
         console.log(res)
         toast.success("user successfully Login")
@@ -54,7 +57,7 @@ const Signin = () => {
 
   const handleResetPass = () => {
     const email = emailRef.current.value
-    sendPasswordResetEmail(auth, email)
+    sendPasswordResetEmailfunc(email)
       .then(() => {
         toast.success("check your email to reset password")
       })

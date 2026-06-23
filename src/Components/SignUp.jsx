@@ -1,10 +1,10 @@
 import { Link } from "react-router";
-import { auth } from "../Firebase/Firebase.config";
-import { createUserWithEmailAndPassword, GoogleAuthProvider, sendEmailVerification, signInWithPopup, updateProfile } from "firebase/auth";
+import {  sendEmailVerification, updateProfile } from "firebase/auth";
 import { toast } from "react-toastify";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { FaEye } from "react-icons/fa";
 import { IoEye } from "react-icons/io5";
+import { AuthContext } from "../Context/AuthContext";
 
 
 
@@ -13,7 +13,12 @@ import { IoEye } from "react-icons/io5";
 const Signup = () => {
 
     const [show, setShow] = useState(false)
-    const provider = new GoogleAuthProvider();
+    
+    
+    const {createUserWithEmailAndPasswordfunc,signInWithPopupfunc} = useContext(AuthContext)
+    
+    
+    
     const handleSignUp = (e) => {
         e.preventDefault()
         // console.log("Hello");
@@ -35,7 +40,7 @@ const Signup = () => {
             return
         }
 
-        createUserWithEmailAndPassword(auth, email, password)
+        createUserWithEmailAndPasswordfunc(email, password)
             .then(res => {
                 updateProfile(res.user, { displayName, photoURL })
                     .then(()=> {
@@ -65,7 +70,7 @@ const Signup = () => {
 
     const handleGoogleSignin = () => {
 
-        signInWithPopup(auth, provider)
+        signInWithPopupfunc()
             .then(res => {
                 sendEmailVerification(res.user)
                     .then(res => {
